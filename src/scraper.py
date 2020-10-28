@@ -2,20 +2,17 @@ import bs4
 import requests
 import re
 import pandas as pd
-
-BASE_URL = 'https://www.basketball-reference.com'
-REGEX_NUMS = r'\d+|\d+\.\d+'
-REGEX_NAMES = r'.+?(?=\s\()'
+from utils import BASE_URL, REGEX_NAMES, REGEX_NUMS, TEAMS
 
 
 def save_output_csv(data):
     df = pd.DataFrame(data)
-    df.to_csv("nba.csv", index=False)
+    df.to_csv("./data/nba.csv", index=False)
 
 
 def get_end_year(season):
-    first_part = season.split('-')[0][:2]
     second_part = season.split('-')[1]
+    first_part = '20' if second_part == '00' else season.split('-')[0][:2]
     year = f'{first_part}{second_part}'
     return int(year)
 
@@ -31,9 +28,9 @@ def treat_input(leader, type="integer"):
     return score
 
 
-def get_player_data(player, row, season):
+def get_player_data(player, row, season, mode):
     player_rel_url = row.find("td", {"data-stat": player}).find("a")
-    if not player_rel_url:
+    if not player_rel_url or mode == 'simple':
         return None, None, None
     else:
         player_url = BASE_URL + player_rel_url['href']
@@ -46,19 +43,22 @@ def get_player_data(player, row, season):
         if soup.find("span", {"class": "f-i f-us"}):
             country = "United States"
         else:
-            country_link = soup.find("span", {"itemprop": "birthPlace"}).find("a")
-            country = country_link.text if country_link else None
+            country_a = soup.find("span", {"itemprop": "birthPlace"}).find("a")
+            country = country_a.text if country_a else None
 
-        team = soup.find("a", string=season).find_next("td", {"data-stat": "team_id"}).text
+        team_id = soup.find("tr", {"id": f'per_game.{get_end_year(season)}'})\
+            .find("td", {"data-stat": "team_id"}).text
+        team = TEAMS[team_id]
+
         birth_date = soup.find("span", {"itemprop": "birthDate"})['data-birth']
         age_awarded = get_end_year(season) - int(birth_date.split('-')[0])
-        return country, team, age_awarded
+        return country, team, int(age_awarded)
     else:
         print(f'[Player] \033[31mERROR {status_code}\033[0m')
         return None, None, None
 
 
-def retrieve_data_leagues():
+def retrieve_data_leagues(mode, league_option):
     url = BASE_URL + '/leagues'
     req = requests.get(url)
     status_code = req.status_code
@@ -75,36 +75,40 @@ def retrieve_data_leagues():
             season = r.find("th", {"data-stat": "season"}).text
             print(season)
             league = r.find("td", {"data-stat": "lg_id"}).text
+
+            if league_option != (league.lower() or "all"):
+                continue
+
             champion = r.find("td", {"data-stat": "champion"}).text
             mvp = r.find("td", {"data-stat": "mvp"}).text
-            mvp_country, mvp_team, mvp_age = get_player_data("mvp", r, season)
+            mvp_country, mvp_team, mvp_age = get_player_data("mvp", r, season, mode)
 
             roy = r.find("td", {"data-stat": "roy"}).text
-            roy_country, roy_team, roy_age = get_player_data("roy", r, season)
+            roy_country, roy_team, roy_age = get_player_data("roy", r, season, mode)
 
             pts_leader = r.find("td", {"data-stat": "pts_leader_name"}).text
             pts_leader_name = " ".join(re.findall(REGEX_NAMES, pts_leader))
             pts_leader_score = treat_input(pts_leader)
             pts_country, pts_team, pts_age = \
-                get_player_data("pts_leader_name", r, season)
+                get_player_data("pts_leader_name", r, season, mode)
 
             trb_leader = r.find("td", {"data-stat": "trb_leader_name"}).text
             trb_leader_name = " ".join(re.findall(REGEX_NAMES, trb_leader))
             trb_leader_score = treat_input(trb_leader)
             trb_country, trb_team, trb_age = \
-                get_player_data("trb_leader_name", r, season)
+                get_player_data("trb_leader_name", r, season, mode)
 
             ast_leader = r.find("td", {"data-stat": "ast_leader_name"}).text
             ast_leader_name = " ".join(re.findall(REGEX_NAMES, ast_leader))
             ast_leader_score = treat_input(ast_leader)
             ast_country, ast_team, ast_age = \
-                get_player_data("ast_leader_name", r, season)
+                get_player_data("ast_leader_name", r, season, mode)
 
             ws_leader = r.find("td", {"data-stat": "ws_leader_name"}).text
             ws_leader_name = " ".join(re.findall(REGEX_NAMES, ws_leader))
             ws_leader_score = treat_input(ws_leader, "decimal")
             ws_country, ws_team, ws_age = \
-                get_player_data("ws_leader_name", r, season)
+                get_player_data("ws_leader_name", r, season, mode)
 
             res = {
                 "Season": season,
@@ -143,8 +147,3 @@ def retrieve_data_leagues():
         return data_output
     else:
         print(f'[Leagues] \033[31mERROR {status_code}\033[0m')
-
-
-if __name__ == "__main__":
-    data = retrieve_data_leagues()
-    save_output_csv(data)
