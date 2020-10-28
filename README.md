@@ -16,4 +16,4 @@ Si la ejecución es correcta se mostrará en consola el mensaje `200 OK` y, de l
 ## Fichero de salida
 El resultado del proceso de web scraping se almacenará en un fichero de salida llamado `nba.csv`.
 
-Para más información, puedes consultar la Wiki de este repositorio.
+Para más información y detalles de este proyecto, puedes consultar la [Wiki](https://github.com/danielsto/nba-reference-scraper/wiki) de este repositorio.
