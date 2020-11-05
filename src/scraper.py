@@ -2,7 +2,7 @@ import bs4
 import requests
 import re
 import pandas as pd
-from utils import BASE_URL, REGEX_NAMES, REGEX_NUMS, TEAMS,\
+from src.utils import BASE_URL, REGEX_NAMES, REGEX_NUMS, TEAMS,\
                 get_player_data, get_end_year, treat_input
 
 
@@ -24,13 +24,13 @@ def retrieve_data_leagues(mode, league_option):
         for i, r in enumerate(rows):
             if i < 2:
                 continue
-            print(r)
             season = r.find("th", {"data-stat": "season"}).text
-            print(season)
             league = r.find("td", {"data-stat": "lg_id"}).text
 
-            if league_option != (league.lower() or "all"):
+            if league_option != league.lower() and league_option != "all":
                 continue
+
+            # print(season)
 
             champion = r.find("td", {"data-stat": "champion"}).text
             mvp = r.find("td", {"data-stat": "mvp"}).text
@@ -59,7 +59,6 @@ def retrieve_data_leagues(mode, league_option):
 
             ws_leader = r.find("td", {"data-stat": "ws_leader_name"}).text
             ws_leader_name = " ".join(re.findall(REGEX_NAMES, ws_leader))
-            print(ws_leader)
             ws_leader_score = treat_input(ws_leader, "decimal")
             ws_country, ws_team, ws_age = \
                 get_player_data("ws_leader_name", r, season, mode)

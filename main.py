@@ -1,4 +1,4 @@
-import scraper
+import src.scraper as scraper
 import argparse
 
 
