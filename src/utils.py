@@ -41,6 +41,7 @@ def get_player_data(player, row, season, mode):
     Scrapes player profile to return their contry, team and age
     """
     player_rel_url = row.find("td", {"data-stat": player}).find("a")
+    
     if not player_rel_url or mode == 'simple':
         return None, None, None
     else:
@@ -53,18 +54,18 @@ def get_player_data(player, row, season, mode):
         soup = bs4.BeautifulSoup(req.text, "html.parser")
 
         if soup.find("span", {"class": "f-i f-us"}):
-            country = "United States"
+            country_text = "United States"
         else:
-            country_a = soup.find("span", {"itemprop": "birthPlace"}).find("a")
-            country = country_a.text if country_a else None
+            country_a = soup.find("span", {"itemprop": "birthPlace"})
+            country = country_a.find("a") if country_a else None
+            country_text = country.text if country else None
 
-        team_id = soup.find("tr", {"id": f'per_game.{get_end_year(season)}'})\
-            .find("td", {"data-stat": "team_id"}).text
-        team = TEAMS[team_id]
+        team_id = soup.find("tr", {"id": f'per_game.{get_end_year(season)}'}).find("td", {"data-stat": "team_id"}).text if soup.find("tr", {"id": f'per_game.{get_end_year(season)}'}) else None
+        team = TEAMS[team_id] if team_id else None
 
-        birth_date = soup.find("span", {"itemprop": "birthDate"})['data-birth']
-        age_awarded = get_end_year(season) - int(birth_date.split('-')[0])
-        return country, team, int(age_awarded)
+        birth_date = soup.find("span", {"itemprop": "birthDate"})['data-birth'] if soup.find("span", {"itemprop": "birthDate"}) else None
+        age_awarded = get_end_year(season) - int(birth_date.split('-')[0]) if birth_date else None
+        return country_text, team, int(age_awarded) if age_awarded else None
     else:
         print(f'[Player] \033[31mERROR {status_code}\033[0m')
         return None, None, None

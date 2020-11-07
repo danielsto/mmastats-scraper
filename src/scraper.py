@@ -30,7 +30,7 @@ def retrieve_data_leagues(mode, league_option):
             if league_option != league.lower() and league_option != "all":
                 continue
 
-            # print(season)
+            print(season)
 
             champion = r.find("td", {"data-stat": "champion"}).text
             mvp = r.find("td", {"data-stat": "mvp"}).text

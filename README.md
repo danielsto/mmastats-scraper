@@ -1,4 +1,4 @@
-# NBAReference Stats Scraper
+# Basketball-Reference Stats Scraper
 
 ## Instalación
 
@@ -10,7 +10,7 @@ pip install -r requirements.txt
 
 ## Ejecución
 
-Para ejecutar el programa se debe comprobar que existe una conexión activa a internet y usaremos el script `scraper.py`.
+Para ejecutar el programa se debe comprobar que existe una conexión activa a internet y usaremos el script ` main.py`.
 
 ```bash
 python main.py [-mode full | simple] [-league nba | aba | baa]
