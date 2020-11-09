@@ -7,11 +7,19 @@ from src.utils import BASE_URL, REGEX_NAMES, REGEX_NUMS, TEAMS,\
 
 
 def save_output_csv(data):
+    """
+    Saves resulting dataset as a dataframe into a csv file.
+    """
     df = pd.DataFrame(data)
-    df.to_csv("./data/nba.csv", index=False)
+    df.to_csv("./data/nba_talent.csv", index=False)
 
 
 def retrieve_data_leagues(mode, league_option):
+    """
+    Retrieves dataset as a python dictionary according to input parameters
+    from the /leagues endpoint.
+    Prints season for execution feedback purposes.
+    """
     url = BASE_URL + '/leagues'
     req = requests.get(url)
     status_code = req.status_code
@@ -30,7 +38,7 @@ def retrieve_data_leagues(mode, league_option):
             if league_option != league.lower() and league_option != "all":
                 continue
 
-            print(season)
+            print(f'{season} \033[92mDONE\033[0m')
 
             champion = r.find("td", {"data-stat": "champion"}).text
             mvp = r.find("td", {"data-stat": "mvp"}).text

@@ -41,7 +41,7 @@ def get_player_data(player, row, season, mode):
     Scrapes player profile to return their contry, team and age
     """
     player_rel_url = row.find("td", {"data-stat": player}).find("a")
-    
+
     if not player_rel_url or mode == 'simple':
         return None, None, None
     else:
