@@ -5,7 +5,7 @@
 Los prerrequisitos y sus versiones vienen especificados en el fichero `requirements.txt` y se pueden instalar de manera conjunta mediante el comando. Este script usa características de Python 3.5+, lo que hace necesaria la instalación de esta versión del lenguaje Python y no la 2.7, ya deprecada.
 
 ```bash
-pip3 install -r requirements.txt
+$ pip3 install -r requirements.txt
 ```
 
 ## Ejecución
@@ -13,7 +13,7 @@ pip3 install -r requirements.txt
 Para ejecutar el programa se debe comprobar que existe una conexión activa a internet y usaremos el script `main.py`.
 
 ```bash
-python3 main.py [-mode full | simple] [-league nba | aba | baa]
+$ python3 main.py [-mode full | simple] [-league nba | aba | baa]
 ```
 
 La ejecución completa del script para obtener el dataset más completo es la siguiente:
