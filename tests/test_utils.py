@@ -1,5 +1,4 @@
 from src.utils import get_player_data, get_end_year, treat_input
-from src.utils import REGEX_NUMS, REGEX_NAMES
 import bs4
 
 SAMPLE_HTML = '<tr data-row="1"><th scope="row" class="left " data-stat="season"><a href="/leagues/NBA_2020.html">2019-20</a></th><td class="left " data-stat="lg_id"><a href="/leagues/NBA_2020.html">NBA</a></td><td class="left " data-stat="champion"><a href="/teams/LAL/2020.html">Los Angeles Lakers</a></td><td class="left " data-stat="mvp"><a href="/players/a/antetgi01.html">G. Antetokounmpo</a></td><td class="left " data-stat="roy"><a href="/players/m/moranja01.html">J. Morant</a></td><td class="left " data-stat="pts_leader_name"><a href="/players/h/hardeja01.html">J. Harden</a>&nbsp;(2335)</td><td class="left " data-stat="trb_leader_name"><a href="/players/g/goberru01.html">R. Gobert</a>&nbsp;(916)</td><td class="left " data-stat="ast_leader_name"><a href="/players/j/jamesle01.html">L. James</a>&nbsp;(684)</td><td class="left " data-stat="ws_leader_name"><a href="/players/h/hardeja01.html">J. Harden</a>&nbsp;(13.1)</td></tr>'
@@ -13,13 +12,13 @@ class TestTreatInput:
         """Test that the right integer is returned from a mixed string"""
         pts_leader = "K. Bryant (2832)"
         res = treat_input(pts_leader)
-        assert res, 2832
+        assert res == 2832
 
     def test_normal_decimal_input(self):
         """Test that the right decimal is returned from a mixed string"""
         ws_leader = "S. O'Neal (14.9)"
-        res = treat_input(ws_leader)
-        assert res, 14.9
+        res = treat_input(ws_leader, type="float")
+        assert res == 14.9
 
 
 class TestGetEndYear:

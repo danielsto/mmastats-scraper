@@ -4,7 +4,7 @@ import requests
 import bs4
 
 BASE_URL = "https://www.basketball-reference.com"
-REGEX_NUMS = r"\d+|\d+\.\d+"
+REGEX_NUMS = r"[-+]?[.]?[\d]+(?:,\d\d\d)*[\.]?\d*(?:[eE][-+]?\d+)?"
 REGEX_NAMES = r".+?(?=\s\()"
 
 with open("./data/teams.json") as json_file:

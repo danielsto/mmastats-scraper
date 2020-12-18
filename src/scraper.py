@@ -5,10 +5,7 @@ import pandas as pd
 from src.utils import (
     BASE_URL,
     REGEX_NAMES,
-    REGEX_NUMS,
-    TEAMS,
     get_player_data,
-    get_end_year,
     treat_input,
 )
 
