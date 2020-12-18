@@ -11,7 +11,7 @@ class TestTreatInput:
 
     def test_normal_integer_input(self):
         """Test that the right integer is returned from a mixed string"""
-        pts_leader = 'K. Bryant (2832)'
+        pts_leader = "K. Bryant (2832)"
         res = treat_input(pts_leader)
         assert res, 2832
 
@@ -27,19 +27,19 @@ class TestGetEndYear:
 
     def test_21st_century(self):
         """Test for years in the 21st century"""
-        season = '2019-20'
+        season = "2019-20"
         res = get_end_year(season)
         assert res == 2020
 
     def test_20th_century(self):
         """Test for years in the 20th century"""
-        season = '1989-90'
+        season = "1989-90"
         res = get_end_year(season)
         assert res == 1990
 
     def test_year_2000(self):
         """Test in the change of century/millenium"""
-        season = '1999-00'
+        season = "1999-00"
         res = get_end_year(season)
         assert res == 2000
 
@@ -48,9 +48,9 @@ class TestGetPlayerData:
     """Test get_player_data function"""
 
     def test_simple_mode(self):
-        res = get_player_data("roy", MOCK_ROW, '2019-20', "simple")
+        res = get_player_data("roy", MOCK_ROW, "2019-20", "simple")
         assert res == (None, None, None)
 
     def test_full_mode(self):
-        res = get_player_data("roy", MOCK_ROW, '2019-20', "full")
-        assert res == ('United States', 'Memphis Grizzlies', 21)
+        res = get_player_data("roy", MOCK_ROW, "2019-20", "full")
+        assert res == ("United States", "Memphis Grizzlies", 21)
